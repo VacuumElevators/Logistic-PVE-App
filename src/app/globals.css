@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f8fb;
+  --foreground: #0f172a;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* PVE brand color scale */
+  --color-brand-50: #fef2f2;
+  --color-brand-100: #fce0df;
+  --color-brand-300: #f08080;
+  --color-brand-500: #f02825;
+  --color-brand-600: #c33533;
+  --color-brand-700: #a51614;
+  --color-brand-800: #7e1610;
+  --color-brand-yellow: #dead00;
+  --color-brand-yellow-50: #fffbeb;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, sans-serif;
+}
+
+/* Smooth fade-in for content transitions */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
+}
+
+/* Container visual animations */
+
+/* Pallet slides in from the right (door side) with a quick scale settle. */
+@keyframes pallet-load {
+  0% {
+    opacity: 0;
+    transform: translateX(80%) scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: translateX(0) scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+.animate-pallet-load {
+  animation: pallet-load 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Empty slot subtle breathing glow. */
+@keyframes slot-idle {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.8; }
+}
+.animate-slot-idle {
+  animation: slot-idle 3s ease-in-out infinite;
+}
+
+/* Partial pallet bottom-fill rises and gently pulses. */
+@keyframes partial-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+.animate-partial-pulse {
+  animation: partial-pulse 1.6s ease-in-out infinite;
+}
+
+/* Corrugation shimmer — soft light sweep across the wall once on load. */
+@keyframes corrugation-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-corrugation-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 100%
+  );
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: corrugation-shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Door rod barely-there tick to feel alive. */
+@keyframes door-tick {
+  0%, 95%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.97); }
+}
+.animate-door-tick {
+  transform-origin: center;
+  animation: door-tick 5s ease-in-out infinite;
+}
+
+/* Overflow pallet alert pulse (red glow). */
+@keyframes overflow-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.6);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 6px rgba(244, 63, 94, 0);
+  }
+}
+.animate-overflow-pulse {
+  animation: overflow-pulse 1.4s ease-in-out infinite;
+}
+
+/* Stats strip slide-in. */
+@keyframes stats-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-stats-pop {
+  animation: stats-pop 0.3s ease-out both;
+}
+
+/* Subtle scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
