@@ -1,0 +1,10 @@
+[
+  { "modelCode": "PVE30",  "name": "PVE30",   "description": null, "capacity": 4, "stops": 5, "isActive": true  },
+  { "modelCode": "PVE37",  "name": "PVE37",   "description": null, "capacity": 4, "stops": 5, "isActive": true  },
+  { "modelCode": "PVE52",  "name": "PVE52",   "description": null, "capacity": 4, "stops": 5, "isActive": true  },
+  { "modelCode": "CUBE",   "name": "Cube",    "description": null, "capacity": 4, "stops": 5, "isActive": true  },
+  { "modelCode": "CUBE36", "name": "Cube 36", "description": null, "capacity": 4, "stops": 5, "isActive": false },
+  { "modelCode": "SQ200",  "name": "SQ200",   "description": null, "capacity": 4, "stops": 5, "isActive": false },
+  { "modelCode": "CY200",  "name": "CY200",   "description": null, "capacity": 4, "stops": 5, "isActive": false },
+  { "modelCode": "CY300",  "name": "CY300",   "description": null, "capacity": 4, "stops": 5, "isActive": false }
+]
