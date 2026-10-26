@@ -169,9 +169,18 @@ authentication on **Supabase**.
 
 ## Testing
 
-This project does not include an automated test suite; QA is performed manually
-against the running app. Adding end-to-end tests (for example Playwright) for the
-core order flow would be a sensible next improvement.
+This project includes a walking-skeleton end-to-end smoke suite (Playwright) in
+[`tests/e2e/`](tests/e2e) — it checks that the app boots, that unauthenticated
+visitors are redirected to the login page, that the login form renders, and that
+protected API routes reject unauthenticated access. Run it with:
+
+```bash
+npm run test:e2e
+```
+
+The suite is read-only (no sign-in, no data writes). Beyond it, QA is performed
+manually; expanding the end-to-end coverage to the full order flow is a sensible
+next step.
 
 ## Project structure
 
