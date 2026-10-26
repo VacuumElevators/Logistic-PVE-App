@@ -20,11 +20,14 @@ schedules it, and both sides track it through to delivery.
 - [Database and migrations](#database-and-migrations)
 - [Seed data](#seed-data)
 - [Running the app](#running-the-app)
-- [Build](#build)
 - [Deployment](#deployment)
+- [Operations](#operations)
+- [Testing](#testing)
 - [Project structure](#project-structure)
 - [User roles](#user-roles)
 - [Further documentation](#further-documentation)
+- [Ownership](#ownership)
+- [Handover](#handover)
 
 ---
 
@@ -92,9 +95,16 @@ The app runs at [http://localhost:3000](http://localhost:3000).
 
 The database schema is defined as ordered SQL migrations in
 [`supabase/migrations/`](supabase/migrations). Apply them to your Supabase
-project in filename order, either with the
-[Supabase CLI](https://supabase.com/docs/guides/local-development) (`supabase db
-push`) or by running each file in the Supabase SQL editor.
+project **in filename order**. The simplest method is to open each file in the
+Supabase dashboard's **SQL editor** and run them one by one, oldest first.
+
+Three files share the `0010` prefix; apply them in this order:
+`0010_drop_purchase_orders_unify_containers.sql` →
+`0010_order_lifecycle_v2.sql` → `0010b_order_dest_write_lock.sql`.
+
+> To use the Supabase CLI (`supabase db push`) instead, first run `supabase init`
+> and `supabase link --project-ref <your-project-ref>` in the repo. The CLI is
+> optional and not required for a working setup.
 
 The migrations create the full schema: the user and location model, the
 elevator and parts catalogue, the order and order-item tables, container slots,
@@ -114,9 +124,10 @@ Seed scripts live in [`scripts/`](scripts) and read their configuration from
 | `seed-pve-catalog.mjs` | `node --env-file=.env.local scripts/seed-pve-catalog.mjs` | Seeds the elevator and parts catalogue. |
 | `seed-pve-users.mjs` | `node --env-file=.env.local scripts/seed-pve-users.mjs` | Seeds example users across the regions. |
 
-The bootstrap administrator created by `seed:admin` has the `SUPER_ADMIN` role.
-**Change its password immediately after first sign-in**, and do not keep the
-default seed credentials in any production environment.
+`npm run seed:admin` creates a `SUPER_ADMIN` account with the default
+credentials **`admin@pve.com` / `admin123`** (the script also prints them when
+it runs). Sign in with these, then **change the password immediately** — do not
+keep the default seed credentials in any production environment.
 
 ## Running the app
 
@@ -129,17 +140,38 @@ default seed credentials in any production environment.
 
 ## Deployment
 
-The application is deployed as a standard Next.js app:
+The application runs in production on **Vercel**, with the database and
+authentication on **Supabase**.
 
-1. **Hosting** — the frontend and API routes are hosted on a Next.js-compatible
-   platform (e.g. Vercel). Pushing to the production branch triggers a build and
-   deploy.
-2. **Database and auth** — provided by the Supabase project. Apply any new
-   migrations to the production Supabase project as part of the release.
+1. **Hosting** — Vercel builds and serves the Next.js frontend and API routes.
+   Deploys are triggered automatically by pushes to the `main` branch
+   (GitHub → Vercel integration); there is no manual deploy step.
+2. **Database and auth** — the production Supabase project. Apply any new
+   migrations to it as part of a release (see [Operations](#operations)).
 3. **Environment variables** — set `NEXT_PUBLIC_SUPABASE_URL`,
    `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, and the optional
-   SMTP variables in the hosting platform's project settings. Never commit these
-   values.
+   SMTP variables in the **Vercel project settings** (Production and Preview).
+   Never commit these values.
+
+## Operations
+
+- **Deploys** — push/merge to `main`; Vercel builds and deploys automatically.
+  Roll back from the Vercel dashboard (Deployments → promote a previous build).
+- **Database migrations** — to change the schema, add a new numbered SQL file to
+  `supabase/migrations/` and apply it to the production Supabase project (SQL
+  editor or CLI). Keep the repository and the database in sync.
+- **Backups** — the database is on Supabase, which provides automated backups
+  per the project's plan; enable Point-in-Time Recovery for finer-grained
+  restore if required.
+- **Secrets** — application secrets live in the Vercel project's environment
+  variables; the Supabase keys are managed in the Supabase dashboard
+  (Settings → API). Nothing sensitive is stored in this repository.
+
+## Testing
+
+This project does not include an automated test suite; QA is performed manually
+against the running app. Adding end-to-end tests (for example Playwright) for the
+core order flow would be a sensible next improvement.
 
 ## Project structure
 
@@ -201,3 +233,17 @@ lifecycle.
 
 Proprietary software owned by Pneumatic Vacuum Elevators (PVE). All rights
 reserved. Not licensed for redistribution or use outside PVE.
+
+## Handover
+
+This repository is the complete source for the live application. Handed over
+alongside it:
+
+- The **Supabase project** (PostgreSQL database + authentication), in PVE's own
+  Supabase organization.
+- The **Vercel project** that builds and hosts the application.
+- **Administrator credentials**, provided separately (never stored in this
+  repository).
+
+Any developer experienced with Next.js and Supabase can continue development
+from this repository and the [`docs/`](docs) folder.

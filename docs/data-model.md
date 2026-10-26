@@ -4,8 +4,9 @@ This document describes the database schema: the entities and how they relate,
 the enumerated types, and a table-by-table reference. The schema is defined by
 the ordered SQL migrations in [`../supabase/migrations/`](../supabase/migrations)
 and mirrored as TypeScript types in `src/types/database.ts`. Apply the
-migrations in filename order (three files share the `0010` prefix and sort
-after `0009`).
+migrations in filename order. Three files share the `0010` prefix; apply them in
+this order: `0010_drop_purchase_orders_unify_containers.sql`,
+`0010_order_lifecycle_v2.sql`, `0010b_order_dest_write_lock.sql`.
 
 ## Entity-relationship diagram
 
